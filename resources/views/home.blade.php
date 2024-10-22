@@ -28,7 +28,7 @@
         </div>
     </div>
     <footer>
-        <a href="{{route('about_task2')}}">About Task 2</a> <!--navigate to About task2 page -->
+        <a href="about_task2">About Task 2</a> <!--navigate to About task2 page -->
     </footer>
 </body>
 </html>
