@@ -15,10 +15,11 @@ class CreateTasksTable extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->date('startedAt');
+            $table->date('startedAt')->nullable();
             $table->date('completedAt')->nullable();
             $table->date('deadline');
             $table->boolean('status')->default(false);
+            $table->timestamps();
         });
     }
 
