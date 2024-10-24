@@ -29,11 +29,23 @@
         <div>
             <label for="status">Status</label>
             <select name="status" id="status">
-                <option value=""  selected disabled>Please Select your status</option>
-                <option value="1" {{$task->status ? 'selected': ''}}>Completed</option>
-                <option value="0" {{!$task->status ? 'selected': ''}}>In Progress</option>
+                <option value="to do" {{ $task->status == 'to do' ? 'selected' : '' }}>To Do</option>
+                <option value="in progress" {{ $task->status == 'in progress' ? 'selected' : '' }}>In Progress</option>
+                <option value="review" {{ $task->status == 'review' ? 'selected' : '' }}>Review</option>
+                <option value="completed" {{ $task->status == 'completed' ? 'selected' : '' }}>Completed</option>
             </select>
+
         </div>
         <button type="submit">Update</button>
+        <a href="{{route('tasks.index')}}"><button>Cancel</button></a>
     </form>
+    @if ($errors->any())
+        <div>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 @endsection

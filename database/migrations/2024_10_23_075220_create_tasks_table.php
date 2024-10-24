@@ -17,8 +17,8 @@ class CreateTasksTable extends Migration
             $table->text('description')->nullable();
             $table->date('startedAt')->nullable();
             $table->date('completedAt')->nullable();
-            $table->date('deadline');
-            $table->boolean('status')->default(false);
+            $table->date('deadline')->nullable();
+            $table->enum('status',['to do','in progress','Review','completed'])->default('to do');
             $table->timestamps();
         });
     }

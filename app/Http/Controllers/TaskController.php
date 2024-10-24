@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCreateValidateRequest;
+use App\Http\Requests\StoreUpdateValidateRequest;
 use App\Models\Tasks;
 use Illuminate\Http\Request;
 
@@ -18,15 +20,8 @@ class TaskController extends Controller
     }
 
     //function store get request check for validate and return data
-    public function store(Request $request){
-        $validatedData = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string|max:255',
-            'startedAt' => 'nullable|date',
-            'completedAt' => 'nullable|date',
-            'deadline' => 'nullable|date',
-        ]);
-        Tasks::create($validatedData);//create new task
+    public function store(StoreCreateValidateRequest $request){
+        Tasks::create($request->validated());//create new task
         //redirect in index page where are present list of tasks and create session with 'with()'
         return redirect()->route('tasks.index')->with('success', 'Task created successfully.');
     }
@@ -37,18 +32,10 @@ class TaskController extends Controller
     public function edit(Tasks $task){
         return view('tasks.edit', compact('task'));
     }
-    public function update(Request $request, Tasks $task){
+    public function update(StoreUpdateValidateRequest $request, Tasks $task){
 
-           $validatedData = $request->validate([
-                'title' => 'required|string|max:255',
-                'description' => 'nullable|string|max:255',
-                'startedAt' => 'date|nullable',
-                'completedAt' => 'date|nullable',
-                'deadline' => 'date|nullable',
-                'status'=>  'boolean',
-            ]);
-            $task->update($validatedData);
-            return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
+            $task->update($request->validated());
+            return redirect()->route('tasks.show', $task)->with('success', 'Task updated successfully.');
     }
     public function destroy(Tasks $task){
       $task->delete();

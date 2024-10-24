@@ -4,18 +4,38 @@
     <h1>Tasks</h1>
     <a href="{{route('tasks.create')}}">Create Task</a>
 
-            <div>
-                <p>{{$task->title}} -
-                    <a href="{{route('tasks.edit', $task)}}">Edit</a></p>
-                <div><p>Description:</p><p>{{$task->description}}</p></div>
-                <div><p>Started At:</p><p>{{$task->startedAt}}</p></div>
-                <div><p>Completed At:</p><p>{{$task->completedAt}}</p></div>
-                <div><p>Deadline:</p><p>{{$task->deadline}}</p></div>
-                <div><p>Status:</p><p>{{$task->status? "Completed":'In prgress'}}</p></div>
+
+    @if(session('success'))
+        <div>{{session('success')}}</div>
+    @endif
+
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Started At</th>
+            <th>Completed At</th>
+            <th>Deadline</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        <tr>
+            <td>{{$task->title}}</td>
+            <td>{{$task->description}}</td>
+            <td>{{$task->startedAt ? $task->startedAt:'non-privileged data'}}</td>
+            <td>{{$task->completedAt ? $task->completedAt:'non-privileged data' }}</td>
+            <td>{{$task->deadline ? $task->deadline:'non-privileged data'}}</td>
+            <td>{{$task->status}}</td>
+            <td>
+                <a href="{{route('tasks.edit', $task)}}">Edit</a>
+                <a href="{{route('tasks.index')}}">All</a>
                 <form action="{{route('tasks.destroy', $task)}}" method="POST" >
                     @csrf
                     @method('DELETE')
                     <button type="submit">Delete</button>
                 </form>
-            </div>
+
+            </td>
+        </tr>
+    </table>
 @endsection
