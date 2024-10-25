@@ -9,11 +9,17 @@ class Task extends Model
 {
     use HasFactory;
 
+    const TO_DO = 1;
+    const IN_PROGRESS = 2;
+    const REVIEW = 3;
+    const COMPLETED = 4;
+
+
     const status = [
-        'to_do' => 'To Do',
-        'in_progress' => 'In Progress',
-        'review' => 'Review',
-        'completed' => 'Completed',
+        1 => 'To Do',
+        2 => 'In Progress',
+        3 => 'Review',
+        4 => 'Completed',
     ];
 
     protected $fillable = [

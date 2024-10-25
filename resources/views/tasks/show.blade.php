@@ -25,7 +25,7 @@
             <td>{{$task->startedAt ? $task->startedAt:'non-privileged data'}}</td>
             <td>{{$task->completedAt ? $task->completedAt:'non-privileged data' }}</td>
             <td>{{$task->deadline ? $task->deadline:'non-privileged data'}}</td>
-            <td>{{$task->status}}</td>
+            <td>{{\App\Models\Task::statusLabel($task->status)}}</td>
             <td>
                 <a href="{{route('tasks.edit', $task)}}">Edit</a>
                 <a href="{{route('tasks.index')}}">All</a>

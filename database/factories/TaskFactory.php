@@ -22,7 +22,7 @@ class TaskFactory extends Factory
             'startedAt' => $this->faker->dateTimeBetween('-1 month', 'now'),
             'completedAt' => $this->faker->dateTimeBetween('now', '+1 month'),
             'deadline' => $this->faker->dateTimeBetween('now', '+1 month'),
-            'status' => $this->faker->randomElement(Task::statusOption()),
+            'status' => $this->faker->randomElement(Task::statusOptionKeys()),
         ];
     }
 }

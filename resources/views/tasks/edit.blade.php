@@ -31,7 +31,7 @@
             <select name="status" id="status">
                 @foreach (App\Models\Task::statusOptionKeys() as $status)
                     <option
-                        value="{{ App\Models\Task::statusLabel($status) }}" {{ $task->status == App\Models\Task::statusLabel($status) ? 'selected' : '' }}>
+                        value="{{$status}}" {{ $task->status == $status ? 'selected' : '' }}>
                         {{ App\Models\Task::statusLabel($status) }}
                     </option>
                     @dump($status)
