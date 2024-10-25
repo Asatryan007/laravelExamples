@@ -20,27 +20,28 @@
         </div>
         <div>
             <label for="completedAt">Completed At</label>
-            <input type="date" name = 'completedAt' value="{{$task->completedAt}}">
+            <input type="date" name='completedAt' value="{{$task->completedAt}}">
         </div>
         <div>
             <label for="deadline">Deadline</label>
-            <input type="date" name = "deadline" value="{{$task->deadline}}">
+            <input type="date" name="deadline" value="{{$task->deadline}}">
         </div>
         <div>
             <label for="status">Status</label>
             <select name="status" id="status">
                 @foreach (App\Models\Task::statusOptionKeys() as $status)
-
-                    <option value="{{ App\Models\Task::statusLabel($status) }}" {{ $task->status == App\Models\Task::statusLabel($status) ? 'selected' : '' }}>
+                    <option
+                        value="{{ App\Models\Task::statusLabel($status) }}" {{ $task->status == App\Models\Task::statusLabel($status) ? 'selected' : '' }}>
                         {{ App\Models\Task::statusLabel($status) }}
                     </option>
                     @dump($status)
                 @endforeach
             </select>
-
         </div>
         <button type="submit">Update</button>
-        <a href="{{route('tasks.index')}}"><button>Cancel</button></a>
+        <a href="{{route('tasks.index')}}">
+            <button>Cancel</button>
+        </a>
     </form>
     @if ($errors->any())
         <div>

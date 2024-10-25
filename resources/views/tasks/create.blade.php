@@ -19,7 +19,7 @@
         </div>
         <div>
             <label for="completedAt">Completed At</label>
-            <input type="date" name = 'completedAt'>
+            <input type="date" name='completedAt'>
         </div>
         <div>
             <label for="deadline">Deadline</label>

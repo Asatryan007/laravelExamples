@@ -2,8 +2,8 @@
 
 @section('content')
     <h1>Tasks</h1>
-    <a href="{{route('tasks.create')}}">Create Task</a>
 
+    <a href="{{route('tasks.create')}}">Create Task</a>
 
     @if(session('success'))
         <div>{{session('success')}}</div>
@@ -29,12 +29,11 @@
             <td>
                 <a href="{{route('tasks.edit', $task)}}">Edit</a>
                 <a href="{{route('tasks.index')}}">All</a>
-                <form action="{{route('tasks.destroy', $task)}}" method="POST" >
+                <form action="{{route('tasks.destroy', $task)}}" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit">Delete</button>
                 </form>
-
             </td>
         </tr>
     </table>

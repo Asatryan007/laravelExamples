@@ -21,7 +21,7 @@ class CreateTasksTable extends Migration
             $table->date('startedAt')->nullable();
             $table->date('completedAt')->nullable();
             $table->date('deadline')->nullable();
-            $table->enum('status', Task::statusOptionKeys() )->default(Task::statusLabel('to_do'));
+            $table->enum('status', Task::statusOptionKeys())->default(Task::statusLabel('to_do'));
             $table->timestamps();
         });
     }
@@ -33,4 +33,6 @@ class CreateTasksTable extends Migration
     {
         Schema::dropIfExists('tasks');
     }
-};
+}
+
+

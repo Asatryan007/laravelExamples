@@ -6,6 +6,6 @@
     <title>Task Manager</title>
 </head>
 <body>
-@yield('content')
+    @yield('content')
 </body>
 </html>
