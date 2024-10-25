@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Requests;
-
+use App\Models\Task;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreUpdateValidateRequest extends FormRequest
@@ -27,7 +27,7 @@ class StoreUpdateValidateRequest extends FormRequest
             'startedAt' => 'date|nullable',
             'completedAt' => 'date|nullable',
             'deadline' => 'date|nullable',
-            'status' => 'nullable|string|in:to do,in progress,review,completed',
+            'status' => 'nullable|string|in:'.implode(',',Task::statusOptionValues()),
         ];
     }
 }

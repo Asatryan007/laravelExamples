@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Task;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -9,16 +10,18 @@ class CreateTasksTable extends Migration
     /**
      * Run the migrations.
      */
+
     public function up(): void
     {
         Schema::create('tasks', function (Blueprint $table) {
+            global $status;
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
             $table->date('startedAt')->nullable();
             $table->date('completedAt')->nullable();
             $table->date('deadline')->nullable();
-            $table->enum('status',['to do','in progress','Review','completed'])->default('to do');
+            $table->enum('status', Task::statusOptionKeys() )->default(Task::statusLabel('to_do'));
             $table->timestamps();
         });
     }

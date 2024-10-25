@@ -29,10 +29,13 @@
         <div>
             <label for="status">Status</label>
             <select name="status" id="status">
-                <option value="to do" {{ $task->status == 'to do' ? 'selected' : '' }}>To Do</option>
-                <option value="in progress" {{ $task->status == 'in progress' ? 'selected' : '' }}>In Progress</option>
-                <option value="review" {{ $task->status == 'review' ? 'selected' : '' }}>Review</option>
-                <option value="completed" {{ $task->status == 'completed' ? 'selected' : '' }}>Completed</option>
+                @foreach (App\Models\Task::statusOptionKeys() as $status)
+
+                    <option value="{{ App\Models\Task::statusLabel($status) }}" {{ $task->status == App\Models\Task::statusLabel($status) ? 'selected' : '' }}>
+                        {{ App\Models\Task::statusLabel($status) }}
+                    </option>
+                    @dump($status)
+                @endforeach
             </select>
 
         </div>
