@@ -13,8 +13,7 @@ class Task extends Model
     const IN_PROGRESS = 2;
     const REVIEW = 3;
     const COMPLETED = 4;
-
-
+    
     const status = [
         1 => 'To Do',
         2 => 'In Progress',

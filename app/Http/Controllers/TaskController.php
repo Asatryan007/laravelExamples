@@ -27,7 +27,7 @@ class TaskController extends Controller
     //function store get request check for validate and return data
     public function store(StoreCreateValidateRequest $request): RedirectResponse
     {
-        Task::create($request->validated());
+        Task::create($request->only('title', 'description'));
 
         return redirect()->route('tasks.index')->with('success', 'Task created successfully.');
     }

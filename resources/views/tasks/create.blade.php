@@ -7,11 +7,17 @@
         @csrf
         <div>
             <label for="title">Title</label>
-            <input type="text" name="title" required>
+            <input type="text" name="title" required maxlength="255">
+            @error('title')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
         </div>
         <div>
             <label for="description">Description</label>
             <textarea name="description" id="" cols="30" rows="10"></textarea>
+            @error('description')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
         </div>
         <div>
             <label for="startedAt">Started At</label>
