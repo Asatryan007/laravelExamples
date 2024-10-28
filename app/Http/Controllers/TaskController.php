@@ -11,9 +11,13 @@ use Illuminate\View\View;
 
 class TaskController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $tasks = Task::all();
+        $filters = [
+            'status' => $request->input('status', 'all'),
+        ];
+
+        $tasks = $this->filterTasks($filters);
 
         return view('tasks.index', compact('tasks'));
     }
@@ -26,7 +30,7 @@ class TaskController extends Controller
     //function store get request check for validate and return data
     public function store(StoreCreateValidateRequest $request): RedirectResponse
     {
-        Task::create($request->only('title', 'description'));
+        Task::create($request->validated());
 
         return redirect()->route('tasks.index')->with('success', 'Task created successfully.');
     }
@@ -55,15 +59,15 @@ class TaskController extends Controller
         return redirect()->route('tasks.index')->with('success', 'Task deleted successfully.');
     }
 
-    public function filterStatus(Request $request): View
+    private function filterTasks(array $filters)
     {
-        $status = $request->input('status');
+        $tasksQuery = Task::query();
 
-        if($status != 'all') {
-            $tasks = Task::where('status', $status)->get();
-        }else {
-            $tasks = Task::all();
+        // Filter by status
+        if ($filters['status'] !== 'all') {
+            $tasksQuery->where('status', $filters['status']);
         }
-        return view('tasks.index', compact( 'tasks'));
+
+        return $tasksQuery->paginate(20);
     }
 }

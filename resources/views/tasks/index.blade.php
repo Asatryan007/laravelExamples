@@ -7,30 +7,31 @@
 
     <div class="filter">
         <h2 class="filter_title">Filter</h2>
-        <form action="{{route('tasks.filter')}}" method = 'post'>
-            @csrf
+        <form action="{{route('tasks.index')}}" method='get'>
             <label for="status">Status</label>
             <select name="status" id="status">
-                <option value="Choose The status" selected >Choose the status</option>
-                @foreach (App\Models\Task::statusOptionKeys() as $status)
+                <option value="all" selected>All</option>
+                @php
+                    $statusKeys = App\Models\Task::statusOptionKeys()
+                @endphp
+                @foreach ($statusKeys as $statusKey)
                     <option
-                        value="{{$status}}" {{request('status') == $status ? 'selected' : '' }}>
-                        {{ App\Models\Task::statusLabel($status) }}
+                        value="{{$statusKey}}" {{request('status') == $statusKey ? 'selected' : '' }}>
+                        {{ App\Models\Task::statusLabel($statusKey) }}
                     </option>
-            @endforeach
-                <option value="all">All</option>
+                @endforeach
             </select>
-            <button type="submit">Get  Values</button>
+            <button type="submit">Get Values</button>
         </form>
     </div>
 
     @if(session('success'))
         <div>{{session('success')}}</div>
     @endif
-    @if(count($tasks) === 0)
+
+    @if($tasks->isEmpty())
         <div>No active Task</div>
-    @endif
-    @if(count($tasks) != 0)
+    @else
         <table>
             <tr>
                 <th>Title</th>
@@ -57,5 +58,7 @@
                 </tr>
             @endforeach
         </table>
+
+        {{ $tasks->appends(['status' => request('status', 'all')])->links() }}
     @endif
 @endsection
