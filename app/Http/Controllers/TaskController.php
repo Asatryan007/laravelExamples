@@ -18,7 +18,6 @@ class TaskController extends Controller
         return view('tasks.index', compact('tasks'));
     }
 
-    //Create function
     public function create(): View
     {
         return view('tasks.create');
@@ -54,5 +53,17 @@ class TaskController extends Controller
         $task->delete();
 
         return redirect()->route('tasks.index')->with('success', 'Task deleted successfully.');
+    }
+
+    public function filterStatus(Request $request): View
+    {
+        $status = $request->input('status');
+
+        if($status != 'all') {
+            $tasks = Task::where('status', $status)->get();
+        }else {
+            $tasks = Task::all();
+        }
+        return view('tasks.index', compact( 'tasks'));
     }
 }

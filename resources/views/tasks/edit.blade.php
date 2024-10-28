@@ -34,7 +34,6 @@
                         value="{{$status}}" {{ $task->status == $status ? 'selected' : '' }}>
                         {{ App\Models\Task::statusLabel($status) }}
                     </option>
-                    @dump($status)
                 @endforeach
             </select>
         </div>

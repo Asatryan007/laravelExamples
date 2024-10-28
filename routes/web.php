@@ -7,4 +7,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::post('tasks/filter', [TaskController::class, 'filterStatus'])->name('tasks.filter');
+
 Route::resource('tasks', TaskController::class);

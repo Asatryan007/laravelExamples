@@ -5,6 +5,25 @@
 
     <a href="{{route('tasks.create')}}">Create Task</a>
 
+    <div class="filter">
+        <h2 class="filter_title">Filter</h2>
+        <form action="{{route('tasks.filter')}}" method = 'post'>
+            @csrf
+            <label for="status">Status</label>
+            <select name="status" id="status">
+                <option value="Choose The status" selected >Choose the status</option>
+                @foreach (App\Models\Task::statusOptionKeys() as $status)
+                    <option
+                        value="{{$status}}" {{request('status') == $status ? 'selected' : '' }}>
+                        {{ App\Models\Task::statusLabel($status) }}
+                    </option>
+            @endforeach
+                <option value="all">All</option>
+            </select>
+            <button type="submit">Get  Values</button>
+        </form>
+    </div>
+
     @if(session('success'))
         <div>{{session('success')}}</div>
     @endif
