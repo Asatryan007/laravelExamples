@@ -16,11 +16,15 @@
         @csrf
         @method('PUT')
 
-        <div>
-            <label for="logo">Upload Logo</label>
-            <input type="file" name="logo" accept="image/*">
+        <div class="mb-6">
+            <label for="logo" class="block text-sm font-medium text-white">Upload Logo</label>
+            <div class="mt-1 flex items-center">
+                <input type="file" name="logo" accept="image/*" class="block w-full text-sm text-gray-500 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
             @if($user->logo)
-                <img src="{{ asset('storage/'.$user->logo) }}" width="100" alt="User Logo">
+                <div class="mt-4">
+                    <img src="{{ asset('storage/'.$user->logo) }}" width="100" alt="User Logo" class="rounded-md shadow">
+                </div>
             @endif
         </div>
 
