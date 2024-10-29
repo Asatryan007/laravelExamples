@@ -1,6 +1,5 @@
-@extends('layouts.app')
-
-@section('content')
+<x-app-layout>
+    <div class="text-white">
     <h1>Tasks</h1>
 
     <a href="{{route('tasks.create')}}">Create Task</a>
@@ -37,4 +36,5 @@
             </td>
         </tr>
     </table>
-@endsection
+    </div>
+</x-app-layout>

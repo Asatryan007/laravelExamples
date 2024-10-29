@@ -9,18 +9,16 @@ Route::get('/', function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/tasksTest', function () {
-        return view('tasksTest');
-    })->middleware(['verified'])->name('tasksTest');
+    Route::resource('tasks', TaskController::class);
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->middleware(['verified'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile', [ProfileController::class, 'logoUpdater'])->name('profile.logoUpdater');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 require __DIR__.'/auth.php';
 
-Route::resource('tasks', TaskController::class);
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Task extends Model
 {
@@ -28,11 +29,12 @@ class Task extends Model
         'completedAt',
         'deadline',
         'status',
+        'user_id'
     ];
 
-    public static function statusOptionValues(): array
+    public function user(): BelongsTo
     {
-        return array_values(self::status);
+        return $this->belongsTo(User::class);
     }
 
     public static function statusOptionKeys(): array
@@ -40,9 +42,9 @@ class Task extends Model
         return array_keys(self::status);
     }
 
-    public static function statusLabel(string $status): ?string
+    public static function statusLabel(int $status): ?string
     {
-        return self::status[$status] ?? null;
+        return self::status[$status] ?? 'Unknown Status';
     }
 
 }

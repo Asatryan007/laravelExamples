@@ -14,10 +14,10 @@ class TaskController extends Controller
     public function index(Request $request): View
     {
         $filters = [
-            'status' => $request->input('status', 'all'),
+            'status' => $request->input('status', null),
         ];
-
         $tasks = $this->filterTasks($filters);
+
 
         return view('tasks.index', compact('tasks'));
     }
@@ -30,7 +30,12 @@ class TaskController extends Controller
     //function store get request check for validate and return data
     public function store(StoreCreateValidateRequest $request): RedirectResponse
     {
-        Task::create($request->validated());
+
+        $taskData = $request->validated();
+        $taskData['user_id'] = auth()->id();
+        $taskData['status'] = Task::TO_DO;
+
+        Task::create($taskData);
 
         return redirect()->route('tasks.index')->with('success', 'Task created successfully.');
     }
@@ -61,10 +66,9 @@ class TaskController extends Controller
 
     private function filterTasks(array $filters)
     {
-        $tasksQuery = Task::query();
-
+        $tasksQuery = Task::where('user_id', auth()->id())->with('user');
         // Filter by status
-        if ($filters['status'] !== 'all') {
+        if (!is_null($filters['status']) && $filters['status'] !== 'all') {
             $tasksQuery->where('status', $filters['status']);
         }
 

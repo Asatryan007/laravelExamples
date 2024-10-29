@@ -12,7 +12,20 @@
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
     </form>
+    <form action="{{ route('profile.logoUpdater') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
 
+        <div>
+            <label for="logo">Upload Logo</label>
+            <input type="file" name="logo" accept="image/*">
+            @if($user->logo)
+                <img src="{{ asset('storage/'.$user->logo) }}" width="100" alt="User Logo">
+            @endif
+        </div>
+
+        <button type="submit">Update Profile</button>
+    </form>
     <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
         @csrf
         @method('patch')

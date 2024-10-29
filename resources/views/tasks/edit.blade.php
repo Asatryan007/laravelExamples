@@ -1,6 +1,5 @@
-@extends('layouts.app')
+<x-app-layout>
 
-@section('content')
     <h2>Edit Task</h2>
 
     <form action="{{route('tasks.update', $task)}}" method="POST">
@@ -51,4 +50,4 @@
             </ul>
         </div>
     @endif
-@endsection
+</x-app-layout>

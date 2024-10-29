@@ -1,6 +1,5 @@
-@extends('layouts.app')
-
-@section('content')
+<x-app-layout>
+    <div class="text-white">
     <h1>Tasks</h1>
 
     <a href="{{route('tasks.create')}}">Create Task</a>
@@ -9,7 +8,7 @@
         <h2 class="filter_title">Filter</h2>
         <form action="{{route('tasks.index')}}" method='get'>
             <label for="status">Status</label>
-            <select name="status" id="status">
+            <select class="text-black" name="status" id="status">
                 <option value="all" selected>All</option>
                 @php
                     $statusKeys = App\Models\Task::statusOptionKeys()
@@ -61,4 +60,5 @@
 
         {{ $tasks->appends(['status' => request('status', 'all')])->links() }}
     @endif
-@endsection
+    </div>
+</x-app-layout>

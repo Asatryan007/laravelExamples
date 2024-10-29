@@ -1,6 +1,5 @@
-@extends('layouts.app')
+<x-app-layout>
 
-@section('content')
     <h2>Create Task</h2>
 
     <form action="{{route('tasks.store')}}" method="POST">
@@ -33,4 +32,4 @@
         </div>
         <button type="submit">Create</button>
     </form>
-@endsection
+</x-app-layout>
