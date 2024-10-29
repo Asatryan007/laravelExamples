@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 use App\Http\Requests\LogoValidateRequest;
-use App\Models\User;
+use App\Models\Task;
 use App\Http\Requests\ProfileUpdateRequest;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +21,34 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        return view('dashboard', compact('user'));
+        $totalTasks = Task::where('user_id', auth()->id())->count();
+
+        $completedTasksCount = Task::where('user_id', auth()->id())
+            ->where('status', Task::COMPLETED)
+            ->count();
+
+        $pendingTasksCount = Task::where('user_id', auth()->id())
+            ->where('status', Task::IN_PROGRESS)
+            ->count();
+
+        $overdueTasksCount = Task::where('user_id', auth()->id())
+            ->where('deadline', '<', Carbon::now())
+            ->where('status', '!=', Task::COMPLETED)
+            ->count();
+
+        $completedTasksPercentage = $totalTasks > 0 ? ($completedTasksCount / $totalTasks) * 100 : 0;
+
+
+        return view('dashboard', compact(
+            'user',
+            'totalTasks',
+            'completedTasksCount',
+            'pendingTasksCount',
+            'overdueTasksCount',
+            'completedTasksPercentage',
+        ));
+
+
     }
 
     public function edit(Request $request): View
