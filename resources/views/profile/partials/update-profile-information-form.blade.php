@@ -12,9 +12,10 @@
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
     </form>
-    <form action="{{ route('profile.logoUpdater') }}" method="POST" enctype="multipart/form-data">
+
+    <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data"  class="mt-6 space-y-6">
         @csrf
-        @method('PUT')
+        @method('PATCH')
 
         <div class="mb-6">
             <label for="logo" class="block text-sm font-medium text-white">Upload Logo</label>
@@ -27,12 +28,6 @@
                 </div>
             @endif
         </div>
-
-        <button type="submit">Update Profile</button>
-    </form>
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
-        @csrf
-        @method('patch')
 
         <div>
             <x-input-label for="name" :value="__('Name')" />

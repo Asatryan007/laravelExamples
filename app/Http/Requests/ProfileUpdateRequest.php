@@ -25,6 +25,15 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'logo.mimes' => 'Allowed file types are jpg, jpeg, png.',
+            'logo.max' => 'Maximum allowed file size is 2MB.',
         ];
     }
 }

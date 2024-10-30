@@ -8,7 +8,6 @@
                 <h2 class="text-xl">User Overview</h2>
                 <p>Name: {{ Auth::user()->name }}</p>
                 <p>Email: {{ Auth::user()->email }}</p>
-                <p>Last Login: {{ Auth::user()->last_login }}</p>
                 <p>Tasks Completed: {{ $completedTasksCount}}</p>
                 <p>Tasks In Progress: {{ $pendingTasksCount }}</p>
             </div>

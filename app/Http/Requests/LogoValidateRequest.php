@@ -22,14 +22,8 @@ class LogoValidateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+
         ];
     }
-    public function messages(): array
-    {
-        return [
-            'logo.mimes' => 'Allowed file types are jpg, jpeg, png.',
-            'logo.max' => 'Maximum allowed file size is 2MB.',
-        ];
-    }
+
 }

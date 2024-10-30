@@ -19,19 +19,13 @@ class ProfileController extends Controller
      */
     public function show(): View
     {
-        $user = Auth::user();
+        $user = Auth::user()->load('tasks');
 
-        $totalTasks = Task::where('user_id', auth()->id())->count();
+        $totalTasks = $user->tasks->count();
 
-        $completedTasksCount = Task::where('user_id', auth()->id())
-            ->where('status', Task::COMPLETED)
-            ->count();
-
-        $pendingTasksCount = Task::where('user_id', auth()->id())
-            ->where('status', Task::IN_PROGRESS)
-            ->count();
-
-        $overdueTasksCount = Task::where('user_id', auth()->id())
+        $completedTasksCount = $user->tasks->where('status', Task::COMPLETED)->count();
+        $pendingTasksCount = $user->tasks->where('status', Task::IN_PROGRESS)->count();
+        $overdueTasksCount = $user->tasks
             ->where('deadline', '<', Carbon::now())
             ->where('status', '!=', Task::COMPLETED)
             ->count();
@@ -47,8 +41,6 @@ class ProfileController extends Controller
             'overdueTasksCount',
             'completedTasksPercentage',
         ));
-
-
     }
 
     public function edit(Request $request): View
@@ -66,20 +58,6 @@ class ProfileController extends Controller
         $user = $request->user();
         $user->fill($request->validated());
 
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
-
-        $user->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
-    }
-
-    public function logoUpdater(LogoValidateRequest $request): RedirectResponse
-    {
-        $user = $request->user();
-        $user->fill($request->validated());
-
         if ($request->hasFile('logo')) {
             // Delete the old logo if it exists
             if ($user->logo) {
@@ -90,10 +68,16 @@ class ProfileController extends Controller
             $path = $request->file('logo')->store('logos', 'public');
             $user->logo = $path;
         }
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
         $user->save();
 
-        return Redirect::route('profile.edit')->with('status', 'Logo-updated');
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
+
     /**
      * Delete the user's account.
      */
