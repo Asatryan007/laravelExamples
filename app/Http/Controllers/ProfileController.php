@@ -22,7 +22,10 @@ class ProfileController extends Controller
         $user = Auth::user()->load('tasks');
 
         $totalTasks = $user->tasks->count();
+        $lastTasks = $user->tasks->sortByDesc('created_at')->take(5);
 
+        $todoTasksCount = $user->tasks->where('status', Task::TO_DO)->count();
+        $reviewTasksCount = $user->tasks->where('status', Task::REVIEW)->count();
         $completedTasksCount = $user->tasks->where('status', Task::COMPLETED)->count();
         $pendingTasksCount = $user->tasks->where('status', Task::IN_PROGRESS)->count();
         $overdueTasksCount = $user->tasks
@@ -30,16 +33,16 @@ class ProfileController extends Controller
             ->where('status', '!=', Task::COMPLETED)
             ->count();
 
-        $completedTasksPercentage = $totalTasks > 0 ? ($completedTasksCount / $totalTasks) * 100 : 0;
-
 
         return view('dashboard', compact(
             'user',
             'totalTasks',
+            'lastTasks',
+            'todoTasksCount',
+            'reviewTasksCount',
             'completedTasksCount',
             'pendingTasksCount',
             'overdueTasksCount',
-            'completedTasksPercentage',
         ));
     }
 
