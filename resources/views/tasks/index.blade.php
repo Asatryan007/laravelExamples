@@ -1,20 +1,20 @@
 <x-app-layout>
     <div class="container mx-auto text-white p-4">
-        <h1 class="text-2xl font-bold mb-4">Tasks</h1>
+        <h1 class="text-2xl font-bold mb-4 ">{{'Tasks'}} </h1>
 
         <a href="{{ route('tasks.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4 inline-block">Create Task</a>
 
         <div class="filter mb-40">
-            <h2 class="filter_title text-xl mb-2">Filter</h2>
+            <h2 class="filter_title text-xl mb-2">{{'Filter'}}</h2>
             <form action="{{ route('tasks.index') }}" method="get" class="flex flex-col sm:flex-row items-start sm:items-center">
                 <label for="status" class="mr-2">Status:</label>
-                <select class="text-black mb-2 sm:mb-0 sm:mr-2" name="status" id="status">
+                <select class="text-black mb-2 sm:mb-0 sm:mr-2 cursor-pointer" name="status" id="status">
                     <option value="all" selected>All</option>
                     @php
                         $statusKeys = App\Models\Task::statusOptionKeys();
                     @endphp
                     @foreach ($statusKeys as $statusKey)
-                        <option value="{{ $statusKey }}" {{ request('status') == $statusKey ? 'selected' : '' }}>
+                        <option  value="{{ $statusKey }}" {{ request('status') == $statusKey ? 'selected' : '' }}>
                             {{ App\Models\Task::statusLabel($statusKey) }}
                         </option>
                     @endforeach
@@ -50,7 +50,7 @@
                             <td class="border border-white p-2">{{ App\Models\Task::statusLabel($task->status) }}</td>
                             <td class="flex justify-between border border-white p-2">
                                 <x-primary-button type="submit" class="w-20 justify-center hover:underline"><a  href="{{ route('tasks.edit', $task) }}">{{'Edit'}}</a></x-primary-button>
-                                <x-primary-button type="submit" class="w-20 hover:underline"><a href="{{route('tasks.show',$task)}}">{{'Show'}}</a></x-primary-button>
+                                <x-primary-button type="submit" class="w-20 justify-center hover:underline"><a href="{{route('tasks.show',$task)}}">{{'Show'}}</a></x-primary-button>
                                 <form action="{{ route('tasks.destroy', $task) }}" method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')
@@ -85,7 +85,7 @@
                             <th class="border border-white p-2">Actions</th>
                             <td class="border border-white p-2">
                                 <x-primary-button type="submit" class="w-20 justify-center hover:underline"><a  href="{{ route('tasks.edit', $task) }}">{{'Edit'}}</a></x-primary-button>
-                                <x-primary-button type="submit" class="w-20 hover:underline"><a href="{{route('tasks.show',$task)}}">{{'Show'}}</a></x-primary-button>
+                                <x-primary-button type="submit" class="w-20 justify-center hover:underline"><a href="{{route('tasks.show',$task)}}">{{'Show'}}</a></x-primary-button>
                                 <form action="{{ route('tasks.destroy', $task) }}" method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')

@@ -33,7 +33,7 @@
                             <td class="border border-white p-2">{{ $task->title }}</td>
                             <td class="border flex flex-col space-y-2 justify-center items-center sm:space-x-2 sm:space-y-0 sm:flex-row border-white p-2 ">
                                 <x-primary-button type="submit" class="w-20 justify-center hover:underline"><a  href="{{ route('tasks.edit', $task) }}">{{'Edit'}}</a></x-primary-button>
-                                <x-primary-button type="submit" class="w-20 hover:underline"><a href="{{route('tasks.show',$task)}}">{{'Show'}}</a></x-primary-button>
+                                <x-primary-button type="submit" class="w-20 justify-center hover:underline"><a href="{{route('tasks.show',$task)}}">{{'Show'}}</a></x-primary-button>
                                     <form action="{{ route('tasks.destroy', $task) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
