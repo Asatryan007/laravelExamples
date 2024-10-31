@@ -14,7 +14,7 @@
                         $statusKeys = App\Models\Task::statusOptionKeys();
                     @endphp
                     @foreach ($statusKeys as $statusKey)
-                        <option  value="{{ $statusKey }}" {{ request('status') == $statusKey ? 'selected' : '' }}>
+                        <option value="{{ $statusKey }}" {{ request('status') == $statusKey ? 'selected' : '' }}>
                             {{ App\Models\Task::statusLabel($statusKey) }}
                         </option>
                     @endforeach
