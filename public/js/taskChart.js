@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         });
-        console.log(taskPieChart);
     } else {
         console.error('Canvas element not found');
     }
