@@ -31,13 +31,13 @@
                     @foreach($lastTasks as $task)
                         <tr>
                             <td class="border border-white p-2">{{ $task->title }}</td>
-                            <td class="border flex flex-col space-x-0 space-y-2 justify-center items-center sm:space-x-2 sm:space-y-0 sm:flex-row  space-x-8 border-white p-2 ">
-                                <x-primary-button><a  href="{{ route('tasks.edit', $task) }}">{{'Edit'}}</a></x-primary-button>
-                                <x-primary-button><a  href="{{ route('tasks.show', $task) }}">{{'Show'}}</a></x-primary-button>
+                            <td class="border flex flex-col space-y-2 justify-center items-center sm:space-x-2 sm:space-y-0 sm:flex-row border-white p-2 ">
+                                <x-primary-button type="submit" class="w-20 justify-center hover:underline"><a  href="{{ route('tasks.edit', $task) }}">{{'Edit'}}</a></x-primary-button>
+                                <x-primary-button type="submit" class="w-20 hover:underline"><a href="{{route('tasks.show',$task)}}">{{'Show'}}</a></x-primary-button>
                                     <form action="{{ route('tasks.destroy', $task) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
-                                        <x-primary-button type="submit" class="text-red-400 hover:underline">Delete</x-primary-button>
+                                        <x-primary-button type="submit" class="w-20 text-red-400 hover:underline">Delete</x-primary-button>
                                     </form>
                             </td>
                         </tr>
@@ -52,41 +52,13 @@
                 <canvas id="taskPieChart"  style="width: 600px; height: 600px;"></canvas>
             </div>
         </div>
-
         <script>
-            const ctx = document.getElementById('taskPieChart').getContext('2d');
-            const taskPieChart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: [
-                        'To Do ({{ ($todoTasksCount / ($todoTasksCount + $reviewTasksCount + $completedTasksCount + $pendingTasksCount)) * 100 }}%)',
-                        'In Progress ({{ ($pendingTasksCount / ($todoTasksCount + $reviewTasksCount + $completedTasksCount + $pendingTasksCount)) * 100 }}%)',
-                        'Review ({{ ($reviewTasksCount / ($todoTasksCount + $reviewTasksCount + $completedTasksCount + $pendingTasksCount)) * 100 }}%)',
-                        'Completed ({{ ($completedTasksCount / ($todoTasksCount + $reviewTasksCount + $completedTasksCount + $pendingTasksCount)) * 100 }}%)'
-                    ],
-                    datasets: [{
-                        label: 'Count By Status',
-                        data: [{{ $todoTasksCount }}, {{ $pendingTasksCount }}, {{ $reviewTasksCount }}, {{ $completedTasksCount }}],
-                        backgroundColor: ['#B5B9BB', '#1993D5', '#D51919', '#26532B'],
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false, // Allow custom aspect ratio
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Distribution of Task Status'
-                        }
-                    }
-                }
-            });
-            console.log(taskPieChart);
+            const todoTasksCount = {{ $todoTasksCount }};
+            const pendingTasksCount = {{ $pendingTasksCount }};
+            const reviewTasksCount = {{ $reviewTasksCount }};
+            const completedTasksCount = {{ $completedTasksCount }};
         </script>
+        <script src="{{ asset('js/taskChart.js') }}"></script>
     @endif
 
 </x-app-layout>
