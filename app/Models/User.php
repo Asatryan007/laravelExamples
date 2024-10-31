@@ -48,8 +48,11 @@ class User extends Authenticatable
         ];
     }
 
-    public function tasks(): HasMany
+    public function tasks()
     {
-        return $this->hasMany(Task::class);
+        return $this->belongsToMany(Task::class, 'user_task')
+            ->withPivot('status', 'deadline') // Include additional fields
+            ->withTimestamps();
     }
+
 }

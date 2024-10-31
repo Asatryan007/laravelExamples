@@ -11,11 +11,11 @@
                 <select class="text-black mb-2 sm:mb-0 sm:mr-2 cursor-pointer" name="status" id="status">
                     <option value="all" selected>All</option>
                     @php
-                        $statusKeys = App\Models\Task::statusOptionKeys();
+                        $statusKeys = App\Models\UserTask::statusOptionKeys();
                     @endphp
                     @foreach ($statusKeys as $statusKey)
                         <option value="{{ $statusKey }}" {{ request('status') == $statusKey ? 'selected' : '' }}>
-                            {{ App\Models\Task::statusLabel($statusKey) }}
+                            {{ App\Models\UserTask::statusLabel($statusKey) }}
                         </option>
                     @endforeach
                 </select>
@@ -47,7 +47,7 @@
                             <td class="border border-white p-2">{{ $task->title }}</td>
                             <td class="border border-white p-2">{{ $task->startedAt ? $task->startedAt : 'non-privileged data' }}</td>
                             <td class="border border-white p-2">{{ $task->deadline ? $task->deadline : 'non-privileged data' }}</td>
-                            <td class="border border-white p-2">{{ App\Models\Task::statusLabel($task->status) }}</td>
+                            <td class="border border-white p-2">{{ App\Models\UserTask::statusLabel($task->status) }}</td>
                             <td class="flex justify-between border border-white p-2">
                                 <x-primary-button type="submit" class="w-20 justify-center hover:underline"><a  href="{{ route('tasks.edit', $task) }}">{{'Edit'}}</a></x-primary-button>
                                 <x-primary-button type="submit" class="w-20 justify-center hover:underline"><a href="{{route('tasks.show',$task)}}">{{'Show'}}</a></x-primary-button>
@@ -79,7 +79,7 @@
                         </tr>
                         <tr>
                             <th class="border border-white p-2">Status</th>
-                            <td class="border border-white p-2">{{ App\Models\Task::statusLabel($task->status) }}</td>
+                            <td class="border border-white p-2">{{ App\Models\UserTask::statusLabel($task->status) }}</td>
                         </tr>
                         <tr>
                             <th class="border border-white p-2">Actions</th>

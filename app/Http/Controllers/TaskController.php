@@ -7,6 +7,7 @@ use App\Http\Requests\StoreUpdateValidateRequest;
 use App\Models\Task;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class TaskController extends Controller
@@ -32,9 +33,16 @@ class TaskController extends Controller
     {
 
         $taskData = $request->validated();
-        auth()->user()->tasks()->create($taskData);
 
-        return redirect()->route('tasks.index')->with('success', 'Task created successfully.');
+        $taskData['parent_id'] = Auth::id();
+
+        $task = Task::create($taskData);
+
+        auth()->user()->tasks()->attach($task->id, [
+            'deadline' => $taskData['deadline'] ?? null,
+        ]);
+
+        return redirect()->route('tasks.index')->with('success', __('Task created successfully.'));
     }
 
     public function show(Task $task): View
@@ -63,7 +71,10 @@ class TaskController extends Controller
 
     private function filterTasks(array $filters)
     {
-        $tasksQuery = Task::where('user_id', auth()->id())->with('user');
+        $tasksQuery = Task::whereHas('users', function ($query) {
+            $query->where('user_id', auth()->id());
+        });
+
         // Filter by status
         if (!is_null($filters['status']) && $filters['status'] !== 'all') {
             $tasksQuery->where('status', $filters['status']);
