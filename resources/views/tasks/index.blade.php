@@ -55,7 +55,7 @@
                             <td class="border border-white p-2">{{ $task->startedAt ? $task->startedAt : 'non-privileged data' }}</td>
                             <td class="border border-white p-2">{{ $deadline != null ? $deadline: 'non-privileged data' }}</td>
                             <td class="border border-white p-2">
-                                <form class="flex" id="statusForm" action="{{route('tasks.statusUpdate',$task)}}" method="post">
+                                <form class="flex flex-col content-between md:flex-row md:justify-evenly" id="statusForm" action="{{route('tasks.statusUpdate',$task)}}" method="post">
                                     @csrf
 
                                     <select name="status" id="status" class="relative w-1/2 text-black border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500">
@@ -75,7 +75,7 @@
                                     <x-primary-button>{{'Apply Status'}}</x-primary-button>
                                 </form>
                             </td>
-                            <td class="flex justify-between border border-white p-2">
+                            <td class="flex justify-between  border-white p-2">
                                 @if ($task->parent_id === auth()->id())
                                     <x-primary-button type="submit" class="w-20 justify-center hover:underline">
                                         <a href="{{ route('tasks.edit', $task) }}">{{ 'Edit' }}</a>

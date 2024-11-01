@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Requests\LogoValidateRequest;
-use App\Models\Task;
+use App\Models\UserTask;
 use App\Http\Requests\ProfileUpdateRequest;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -24,26 +23,33 @@ class ProfileController extends Controller
         $totalTasks = $user->tasks->count();
         $lastTasks = $user->tasks->sortByDesc('created_at')->take(5);
 
-        $todoTasksCount = $user->tasks->where('status', Task::TO_DO)->count();
-        $reviewTasksCount = $user->tasks->where('status', Task::REVIEW)->count();
-        $completedTasksCount = $user->tasks->where('status', Task::COMPLETED)->count();
-        $pendingTasksCount = $user->tasks->where('status', Task::IN_PROGRESS)->count();
-        $overdueTasksCount = $user->tasks
-            ->where('deadline', '<', Carbon::now())
-            ->where('status', '!=', Task::COMPLETED)
-            ->count();
+        $taskCounts = [
+            UserTask::TO_DO => 0,
+            UserTask::REVIEW => 0,
+            UserTask::COMPLETED => 0,
+            UserTask::IN_PROGRESS => 0,
+        ];
+        $overdueTasksCount = 0;
 
+        foreach ($user->tasks as $task) {
+            $status = $task->pivot->status;
+            $taskCounts[$status]++;
 
-        return view('dashboard', compact(
-            'user',
-            'totalTasks',
-            'lastTasks',
-            'todoTasksCount',
-            'reviewTasksCount',
-            'completedTasksCount',
-            'pendingTasksCount',
-            'overdueTasksCount',
-        ));
+            if ($task->deadline < Carbon::now() && $status !== UserTask::COMPLETED) {
+                $overdueTasksCount++;
+            }
+        }
+
+        return view('dashboard', [
+            'user' => $user,
+            'totalTasks' => $totalTasks,
+            'lastTasks' => $lastTasks,
+            'todoTasksCount' => $taskCounts[UserTask::TO_DO],
+            'reviewTasksCount' => $taskCounts[UserTask::REVIEW],
+            'completedTasksCount' => $taskCounts[UserTask::COMPLETED],
+            'pendingTasksCount' => $taskCounts[UserTask::IN_PROGRESS],
+            'overdueTasksCount' => $overdueTasksCount,
+        ]);
     }
 
     public function edit(Request $request): View

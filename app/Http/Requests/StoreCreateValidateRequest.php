@@ -28,7 +28,7 @@ class StoreCreateValidateRequest extends FormRequest
             'description' => 'required|string|max:255',
             'startedAt' => 'nullable|date',
             'deadline' => 'nullable|date',
-            'status' => 'required|in:'.implode(',',UserTask::statusOptionKeys()),
+//            'status' => 'nullable|in:'.implode(',',UserTask::statusOptionKeys()),
             'users.*' => 'exists:users,id'
         ];
     }

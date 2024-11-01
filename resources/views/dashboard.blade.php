@@ -9,6 +9,8 @@
                     <div class="w-full flex flex-col space-x-8  space-y-2">
                         <h2 class=" text-base sm:text-2xl">State Of The Tasks</h2>
                         <div class="text-left">
+                            <p class = 'flex justify-between text-gray-300 text-xs sm:text-lg'>Total Tasks: <span class="">{{$totalTasks}}</span></p>
+                            <p class = 'flex justify-between text-gray-300 text-xs sm:text-lg'>Overdue Tasks: <span class="">{{$overdueTasksCount}}</span></p>
                             <p class = 'flex justify-between text-gray-300 text-xs sm:text-lg'>Tasks To Do: <span class="">{{$todoTasksCount}}</span></p>
                             <p class = 'flex justify-between text-gray-300 text-xs sm:text-lg'>Tasks In Progress: <span class="">{{ $pendingTasksCount }}</span></p>
                             <p class = 'flex justify-between text-gray-300 text-xs sm:text-lg'>Tasks Review: <span class="">{{$reviewTasksCount}}</span></p>
@@ -32,13 +34,29 @@
                         <tr>
                             <td class="border border-white p-2">{{ $task->title }}</td>
                             <td class="border flex flex-col space-y-2 justify-center items-center sm:space-x-2 sm:space-y-0 sm:flex-row border-white p-2 ">
-                                <x-primary-button type="submit" class="w-20 justify-center hover:underline"><a  href="{{ route('tasks.edit', $task) }}">{{'Edit'}}</a></x-primary-button>
-                                <x-primary-button type="submit" class="w-20 justify-center hover:underline"><a href="{{route('tasks.show',$task)}}">{{'Show'}}</a></x-primary-button>
+                                @if ($task->parent_id === auth()->id())
+                                    <x-primary-button type="submit" class="w-20 justify-center hover:underline">
+                                        <a href="{{ route('tasks.edit', $task) }}">{{ 'Edit' }}</a>
+                                    </x-primary-button>
+                                    <x-primary-button type="submit" class="w-20 justify-center hover:underline">
+                                        <a href="{{route('tasks.show',$task)}}">{{'Show'}}</a>
+                                    </x-primary-button>
                                     <form action="{{ route('tasks.destroy', $task) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
                                         <x-primary-button type="submit" class="w-20 text-red-400 hover:underline">Delete</x-primary-button>
                                     </form>
+                                @else
+                                    <x-primary-button type="button" class="w-20 justify-center hover:underline">
+                                        <a href="{{ route('tasks.edit', $task) }}">{{ 'Edit' }}</a>
+                                    </x-primary-button>
+                                    <x-primary-button type="submit" class="w-20 justify-center hover:underline">
+                                        <a href="{{route('tasks.show',$task)}}">{{'Show'}}</a>
+                                    </x-primary-button>
+                                    <x-primary-button type="button" class="w-20 text-red-400 opacity-50  cursor-not-allowed" disabled>
+                                        {{'Delete'}}
+                                    </x-primary-button>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
