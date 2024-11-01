@@ -7,6 +7,7 @@
             @csrf
             @method('PUT')
             @php
+                $users = $task->users;
                 $userTask = $task->users->firstWhere('id', auth()->id());
                 $deadline = $userTask ? $userTask->pivot->deadline : 'non-privileged data';
             @endphp
@@ -79,7 +80,16 @@
                     <input type="hidden" value="{{$deadline}}" name="deadline"  maxlength="255" class="w-full p-2 border border-white bg-gray-300 text-black cursor-not-allowed" >
                 </div>
                 <div class="mb-4">
-
+                    <label for="usersname">Users which have the same task</label>
+                    <div id="usersname" class="flex flex-col">
+                    @foreach($users as $user)
+                        <div class="flex justify-between mb-4">
+                            <p>{{$user->name}}</p>
+                            <p>{{$user->email}}</p>
+                            <x-primary-button type="reset" >Remove</x-primary-button>
+                        </div>
+                    @endforeach
+                    </div>
                 </div>
                 <div class="">
                     <button type="submit" class="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
