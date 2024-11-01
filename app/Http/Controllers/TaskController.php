@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StatusUpdateRequest;
 use App\Http\Requests\StoreCreateValidateRequest;
 use App\Http\Requests\StoreUpdateValidateRequest;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,28 +21,29 @@ class TaskController extends Controller
         ];
         $tasks = $this->filterTasks($filters);
 
-
         return view('tasks.index', compact('tasks'));
     }
 
     public function create(): View
     {
-        return view('tasks.create');
+        $users = User::where('id', '!=', Auth::id())->get();
+        return view('tasks.create', compact('users'));
     }
 
     //function store get request check for validate and return data
     public function store(StoreCreateValidateRequest $request): RedirectResponse
     {
-
         $taskData = $request->validated();
 
         $taskData['parent_id'] = Auth::id();
+        $selectedUsers = $taskData['users'];
 
         $task = Task::create($taskData);
 
         auth()->user()->tasks()->attach($task->id, [
             'deadline' => $taskData['deadline'] ?? null,
         ]);
+        $task->users()->attach($selectedUsers);
 
         return redirect()->route('tasks.index')->with('success', __('Task created successfully.'));
     }
@@ -57,7 +60,14 @@ class TaskController extends Controller
 
     public function update(StoreUpdateValidateRequest $request, Task $task): RedirectResponse
     {
-        $task->update($request->validated());
+        $data = $request->validated();
+        $deadline = $data['deadline'];
+
+        $task->update(collect($data)->except('deadline')->toArray());
+
+        auth()->user()->tasks()->updateExistingPivot($task->id, [
+            'deadline' => $deadline,
+        ]);
 
         return redirect()->route('tasks.show', $task)->with('success', 'Task updated successfully.');
     }
@@ -69,17 +79,33 @@ class TaskController extends Controller
         return redirect()->route('tasks.index')->with('success', 'Task deleted successfully.');
     }
 
+    public function statusUpdate(StatusUpdateRequest $request, Task $task): RedirectResponse
+    {
+        $status = $request->validated()['status'];
+
+        auth()->user()->tasks()->updateExistingPivot($task->id, [
+            'status' => $status,
+        ]);
+
+        return redirect()->route('tasks.show',$task)->with('success','Task  '. $task->title .'  status updated successfully.');
+    }
     private function filterTasks(array $filters)
     {
-        $tasksQuery = Task::whereHas('users', function ($query) {
+        $tasksQuery = Task::with('users:id,name'); // Eager load users with status
+
+        $tasksQuery->whereHas('users', function ($query) {
             $query->where('user_id', auth()->id());
         });
 
         // Filter by status
         if (!is_null($filters['status']) && $filters['status'] !== 'all') {
-            $tasksQuery->where('status', $filters['status']);
+            $tasksQuery->whereHas('users', function ($query) use ($filters) {
+                $query->where('user_id', auth()->id())
+                    ->where('status', $filters['status']);
+            });
         }
 
         return $tasksQuery->paginate(20);
     }
+
 }

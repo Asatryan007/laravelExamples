@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Requests;
-use App\Models\Task;
-use Illuminate\Foundation\Http\FormRequest;
 
-class StoreUpdateValidateRequest extends FormRequest
+use Illuminate\Foundation\Http\FormRequest;
+use App\Models\UserTask;
+
+class StatusUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +23,7 @@ class StoreUpdateValidateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string|max:255',
-            'startedAt' => 'date|nullable',
-            'completedAt' => 'date|nullable',
-            'deadline' => 'date|nullable',
+            'status' => 'required|in:'.implode(',',UserTask::statusOptionKeys()),
         ];
     }
 }

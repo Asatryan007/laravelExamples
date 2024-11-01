@@ -18,7 +18,6 @@ class Task extends Model
         'startedAt',
         'completedAt',
         'deadline',
-        'status',
         'parent_id'
     ];
 

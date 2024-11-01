@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\UserTask;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,6 +28,8 @@ class StoreCreateValidateRequest extends FormRequest
             'description' => 'required|string|max:255',
             'startedAt' => 'nullable|date',
             'deadline' => 'nullable|date',
+            'status' => 'required|in:'.implode(',',UserTask::statusOptionKeys()),
+            'users.*' => 'exists:users,id'
         ];
     }
 

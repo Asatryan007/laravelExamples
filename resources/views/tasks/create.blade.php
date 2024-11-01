@@ -27,6 +27,15 @@
                 <label for="deadline" class="block text-black">Select the date for the deadline.</label>
                 <input type="date" name="deadline" class="w-full p-2 border border-white bg-gray-300 text-black">
             </div>
+            <div class="mb-4">
+                <label for="users" class="block text-black">{{'Select Users'}}</label>
+
+                <select name="users[]" id="users" class="w-full p-2 border border-white bg-gray-300 text-black focus:outline-none focus:border-blue-500" multiple>
+                    @foreach($users as $user)
+                        <option value="{{$user->id}}" >{{$user->name}}</option>
+                    @endforeach
+                </select>
+            </div>
             <button type="submit" class="w-half  py-2 px-4 bg-blue-600 text-black rounded-lg shadow-md hover:bg-blue-700 transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Create</button>
         </form>
     </div>

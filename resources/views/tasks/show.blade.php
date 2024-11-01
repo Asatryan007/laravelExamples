@@ -33,19 +33,56 @@
                         <td class="py-2 px-4 border-b">{{ $task->description }}</td>
                         <td class="py-2 px-4 border-b">{{ $task->startedAt ? $task->startedAt : 'non-privileged data' }}</td>
                         <td class="py-2 px-4 border-b">{{ $task->completedAt ? $task->completedAt : 'non-privileged data' }}</td>
-                        <td class="py-2 px-4 border-b">{{ $task->deadline ? $task->deadline : 'non-privileged data' }}</td>
-                        <td class="py-2 px-4 border-b">{{ \App\Models\Task::statusLabel($task->status) }}</td>
-                        <td class="py-2 px-4 border-b flex flex-col space-y-2  md:grid md:place-items-center">
-                            <x-primary-button type="submit" class="justify-center w-20 hover:underline "><a
-                                    href="{{route('tasks.edit',$task)}}">{{'Edit'}}</a></x-primary-button>
-                            <x-primary-button type="submit" class="justify-center w-20 hover:underline"><a
-                                    href="{{route('tasks.index')}}">{{'All'}}</a></x-primary-button>
-                            <form action="{{ route('tasks.destroy', $task) }}" method="POST" class="inline">
+                        @php
+                            $userTask = $task->users->firstWhere('id', auth()->id());
+                            $deadline = $userTask ? $userTask->pivot->deadline : 'non-privileged data';
+                        @endphp
+                        <td class="py-2 px-4 border-b">
+                            {{ $deadline != null ? $deadline: 'non-privileged data' }}
+                        </td>
+                        <td class="py-2 px-4 border-b">
+                            <form class="flex" id="statusForm" action="{{route('tasks.statusUpdate',$task)}}" method="post">
                                 @csrf
-                                @method('DELETE')
-                                <x-primary-button type="submit" class="w-20 text-red-400 hover:underline">Delete
-                                </x-primary-button>
+
+                                <select name="status" id="status" class="relative w-1/2 text-black border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500">
+                                    @php
+                                        $currentStatus = $userTask ? $userTask->pivot->status : null;
+                                    @endphp
+
+                                    @foreach (App\Models\UserTask::statusOptionKeys() as $statusKey)
+                                        <option value="{{ $statusKey }}" {{ $currentStatus == $statusKey ? 'selected' : '' }}>
+                                            {{ App\Models\UserTask::statusLabel($statusKey) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                                <x-primary-button>{{'Apply Status'}}</x-primary-button>
                             </form>
+                        </td>
+                        <td class="py-2 px-4 border-b flex flex-col space-y-2  md:grid md:place-items-center">
+                            @if ($task->parent_id === auth()->id())
+                                <x-primary-button type="submit" class="w-20 justify-center hover:underline">
+                                    <a href="{{ route('tasks.edit', $task) }}">{{ 'Edit' }}</a>
+                                </x-primary-button>
+                                <x-primary-button type="submit" class="w-20 justify-center hover:underline">
+                                    <a href="{{route('tasks.index')}}">{{'All'}}</a>
+                                </x-primary-button>
+                                <form action="{{ route('tasks.destroy', $task) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <x-primary-button type="submit" class="w-20 text-red-400 hover:underline">{{'Delete'}}</x-primary-button>
+                                </form>
+                            @else
+                                <x-primary-button type="button" class="w-20 justify-center hover:underline">
+                                    <a href="{{ route('tasks.edit', $task) }}">{{ 'Edit' }}</a>
+                                </x-primary-button>
+                                <x-primary-button type="submit" class="w-20 justify-center hover:underline">
+                                    <a href="{{route('tasks.index')}}">{{'All'}}</a>
+                                </x-primary-button>
+                                <x-primary-button type="button" class="w-20 text-red-400 opacity-50  cursor-not-allowed" disabled>
+                                    {{'Delete'}}
+                                </x-primary-button>
+                            @endif
                         </td>
                     </tr>
                     </tbody>
@@ -72,25 +109,56 @@
                 </tr>
                 <tr>
                     <th class="border bg-gray-700 border-r p-2">Deadline</th>
-                    <td class="border border-white p-2 hover:bg-gray-600">{{ $task->deadline ? $task->deadline : 'non-privileged data' }}</td>
+                    <td class="border border-white p-2 hover:bg-gray-600">
+                        {{ $deadline != null ? $deadline: 'non-privileged data' }}
+                    </td>
                 </tr>
+
                 <tr>
                     <th class="border bg-gray-700 border-r p-2">Status</th>
-                    <td class="border border-white p-2 hover:bg-gray-600">{{ App\Models\Task::statusLabel($task->status) }}</td>
+                    <td class="border border-white p-2 hover:bg-gray-600">
+                        <form class="flex" id="statusForm" action="{{route('tasks.statusUpdate',$task)}}" method="post">
+                            @csrf
+
+                            <select name="status" id="status" class="relative w-1/2 text-black border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500">
+
+                                @foreach (App\Models\UserTask::statusOptionKeys() as $statusKey)
+                                    <option value="{{ $statusKey }}" {{ $currentStatus == $statusKey ? 'selected' : '' }}>
+                                        {{ App\Models\UserTask::statusLabel($statusKey) }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            <x-primary-button>{{'Apply Status'}}</x-primary-button>
+                        </form>
+                    </td>
                 </tr>
                 <tr>
                     <th class="border bg-gray-700 border-r p-2">Actions</th>
                     <td class="border border-white p-2 flex  flex-col justify-center items-center space-y-2 sm:flex-row sm:justify-between sm:items-center  hover:bg-gray-600">
-                        <x-primary-button type="submit" class="w-20 justify-center hover:underline sm:mt-2 "><a
-                                href="{{ route('tasks.edit', $task) }}">{{'Edit'}}</a></x-primary-button>
-                        <x-primary-button type="submit" class="w-20 justify-center hover:underline"><a
-                                href="{{route('tasks.index')}}">{{'All'}}</a></x-primary-button>
-                        <form action="{{ route('tasks.destroy', $task) }}" method="POST" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <x-primary-button type="submit" class="w-20 text-red-400 hover:underline">Delete
+                        @if ($task->parent_id === auth()->id())
+                            <x-primary-button type="submit" class="w-20 justify-center hover:underline">
+                                <a href="{{ route('tasks.edit', $task) }}">{{ 'Edit' }}</a>
                             </x-primary-button>
-                        </form>
+                            <x-primary-button type="submit" class="w-20 justify-center hover:underline">
+                                <a href="{{route('tasks.index')}}">{{'All'}}</a>
+                            </x-primary-button>
+                            <form action="{{ route('tasks.destroy', $task) }}" method="POST" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <x-primary-button type="submit" class="w-20 text-red-400 hover:underline">{{'Delete'}}</x-primary-button>
+                            </form>
+                        @else
+                            <x-primary-button type="button" class="w-20 justify-center hover:underline">
+                                <a href="{{ route('tasks.edit', $task) }}">{{ 'Edit' }}</a>
+                            </x-primary-button>
+                            <x-primary-button type="submit" class="w-20 justify-center hover:underline">
+                                <a href="{{route('tasks.index')}}">{{'All'}}</a>
+                            </x-primary-button>
+                            <x-primary-button type="button" class="w-20 text-red-400 opacity-50  cursor-not-allowed" disabled>
+                                {{'Delete'}}
+                            </x-primary-button>
+                        @endif
                     </td>
                 </tr>
             </table>

@@ -21,7 +21,7 @@ class UserTask extends Model
 
     protected $table = 'user_task';
 
-    protected $fillable = ['user_id', 'task_id', 'status'];
+    protected $fillable = ['user_id', 'task_id', 'status','deadline'];
 
     public function user(): BelongsTo
     {
@@ -38,7 +38,7 @@ class UserTask extends Model
         return array_keys(self::status);
     }
 
-    public static function statusLabel(int $status): ?string
+    public static function statusLabel($status): ?string
     {
         return self::status[$status] ?? 'Unknown Status';
     }
