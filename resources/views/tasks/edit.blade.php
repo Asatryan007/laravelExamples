@@ -2,6 +2,9 @@
     <div class="container mx-auto px-5">
         <h2 class="text-white flex justify-center items-center text-2xl mb-4 mt-4">{{'Edit Task'}}</h2>
 
+        @if(session('success'))
+            <div class="mb-4 p-2 bg-green-600 rounded">{{ session('success') }}</div>
+        @endif
 
         <form action="{{ route('tasks.update', $task) }}" method="POST" class="max-w-lg mx-auto p-6 bg-gray-500 rounded-lg">
             @csrf
@@ -16,14 +19,14 @@
                     <label for="title" class="block text-black">Title</label>
                     <input type="text" value="{{$task->title}}" name="title" required maxlength="255" class="w-full p-2 border border-white bg-gray-300 text-black">
                     @error('title')
-                    <div class="alert alert-danger text-red-500">{{ $message }}</div>
+                        <div class="alert alert-danger text-red-500">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="mb-8">
                     <label for="description" class="block text-black">Description</label>
                     <textarea name="description" cols="30" rows="10" class="w-full p-2 border border-white bg-gray-300 text-black">{{$task->description}}</textarea>
                     @error('description')
-                    <div class="alert alert-danger text-red-500">{{ $message }}</div>
+                        <div class="alert alert-danger text-red-500">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="mb-4">
@@ -39,16 +42,32 @@
                     <input type="date" name="deadline" value="{{$deadline}}" class="w-full p-2 border border-white bg-gray-300 text-black">
                 </div>
                 <div class="mb-4">
+                    <label for="usersname">Users which have the same task</label>
+                    <div id="usersname" class="flex flex-col h-40 p-4 overflow-y-auto">
+                        @foreach($users as $user)
+                            @if($task->parent_id != $user->pivot->user_id)
+                                <div class="flex justify-between mb-4">
+                                    <p>{{$user->name}}</p>
+                                    <p>{{$user->email}}</p>
+                                    <form action="{{route('tasks.detach',['userId'=> $user->id, 'taskId'=>$task->id,])}}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <x-primary-button type="submit" >Remove</x-primary-button>
+                                    </form>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                    <div class="">
+                        <button type="submit" class="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                            {{'Update'}}
+                        </button>
+                        <button type="button" class="bg-gray-300 text-gray-700 rounded-lg px-4 py-2 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50">
+                            <a href="{{ route('tasks.index') }}"> {{'Cancel'}} </a>
+                        </button>
+                    </div>
+                </div>
 
-                </div>
-                <div class="">
-                    <button type="submit" class="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                        {{'Update'}}
-                    </button>
-                    <button type="button" class="bg-gray-300 text-gray-700 rounded-lg px-4 py-2 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50">
-                        <a href="{{ route('tasks.index') }}"> {{'Cancel'}} </a>
-                    </button>
-                </div>
             @else
                 <div class="mb-4">
                     <label for="title" class="block text-black">Title</label>
@@ -79,18 +98,7 @@
                     <input type="date" name="deadline" value="{{$deadline}}" class="w-full p-2 border border-white bg-gray-300 text-black cursor-not-allowed" disabled>
                     <input type="hidden" value="{{$deadline}}" name="deadline"  maxlength="255" class="w-full p-2 border border-white bg-gray-300 text-black cursor-not-allowed" >
                 </div>
-                <div class="mb-4">
-                    <label for="usersname">Users which have the same task</label>
-                    <div id="usersname" class="flex flex-col">
-                    @foreach($users as $user)
-                        <div class="flex justify-between mb-4">
-                            <p>{{$user->name}}</p>
-                            <p>{{$user->email}}</p>
-                            <x-primary-button type="reset" >Remove</x-primary-button>
-                        </div>
-                    @endforeach
-                    </div>
-                </div>
+
                 <div class="">
                     <button type="submit" class="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                         {{'Update'}}

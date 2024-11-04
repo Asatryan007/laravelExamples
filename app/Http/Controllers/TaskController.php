@@ -55,6 +55,7 @@ class TaskController extends Controller
 
     public function edit(Task $task): View
     {
+
         return view('tasks.edit', compact('task'));
     }
 
@@ -77,6 +78,16 @@ class TaskController extends Controller
         $task->delete();
 
         return redirect()->route('tasks.index')->with('success', 'Task deleted successfully.');
+    }
+
+    public function detach( $userId, $taskId): RedirectResponse
+    {
+
+        $user = User::findOrFail($userId);
+
+        $user->tasks()->detach($taskId);
+
+        return redirect()->route('tasks.edit', $taskId)->with('success', 'Task from User deleted successfully.');
     }
 
     public function statusUpdate(StatusUpdateRequest $request, Task $task): RedirectResponse

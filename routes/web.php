@@ -10,6 +10,7 @@ Route::get('/', function () {
 
 Route::middleware('auth')->group(function () {
     Route::resource('tasks', TaskController::class);
+    Route::delete('/users/{userId}/tasks/{taskId}', [TaskController::class, 'detach'])->name('tasks.detach');
     Route::post('/tasks/{task}/status-update', [TaskController::class, 'statusUpdate'])->name('tasks.statusUpdate');
     Route::get('/dashboard',[ProfileController::class, 'show'])->middleware(['verified'])->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

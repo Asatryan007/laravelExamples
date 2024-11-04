@@ -37,6 +37,7 @@
                         <th class="border border-white p-2">Started At</th>
                         <th class="border border-white p-2">Deadline</th>
                         <th class="border border-white p-2">Status</th>
+                        <th class="border border-white p-2">Other User`s Status</th>
                         <th class="border border-white p-2">Actions</th>
                     </tr>
                     </thead>
@@ -55,10 +56,10 @@
                             <td class="border border-white p-2">{{ $task->startedAt ? $task->startedAt : 'non-privileged data' }}</td>
                             <td class="border border-white p-2">{{ $deadline != null ? $deadline: 'non-privileged data' }}</td>
                             <td class="border border-white p-2">
-                                <form class="flex flex-col content-between md:flex-row md:justify-evenly" id="statusForm" action="{{route('tasks.statusUpdate',$task)}}" method="post">
+                                <form class="flex flex-col space-y-2 content-between lg:flex-row md:justify-evenly" id="statusForm" action="{{route('tasks.statusUpdate',$task)}}" method="post">
                                     @csrf
 
-                                    <select name="status" id="status" class="relative w-1/2 text-black border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500">
+                                    <select name="status" id="status" class="relative w-full text-black border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500">
                                         @php
                                             // Get the current user's task status from the pivot table
                                             $userTask = $task->users->firstWhere('id', auth()->id());
@@ -75,7 +76,14 @@
                                     <x-primary-button>{{'Apply Status'}}</x-primary-button>
                                 </form>
                             </td>
-                            <td class="flex justify-between  border-white p-2">
+                            <td class="border border-white p-2">
+                                @foreach ($task->users as $user)
+                                    @if($task->parent_id != $user->pivot->user_id && $user->pivot->user_id != auth()->id())
+                                        <div>{{ $user->name }}: {{ App\Models\UserTask::statusLabel($user->pivot->status) }}</div>
+                                    @endif
+                                @endforeach
+                            </td>
+                            <td class=" flex flex-col items-center justify-center space-y-2 border border-white p-2 lg:table-cell">
                                 @if ($task->parent_id === auth()->id())
                                     <x-primary-button type="submit" class="w-20 justify-center hover:underline">
                                         <a href="{{ route('tasks.edit', $task) }}">{{ 'Edit' }}</a>
@@ -128,10 +136,10 @@
                         <tr>
                             <th class="border border-white p-2">Status</th>
                             <td class="border border-white p-2">
-                                <form class="flex" id="statusForm" action="{{route('tasks.statusUpdate',$task)}}" method="post">
+                                <form class="flex flex-col space-y-2" id="statusForm" action="{{route('tasks.statusUpdate',$task)}}" method="post">
                                     @csrf
 
-                                    <select name="status" id="status" class="relative w-1/2 text-black border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500">
+                                    <select name="status" id="status" class="relative w-full text-black border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500">
                                         @php
                                             // Get the current user's task status from the pivot table
                                             $userTask = $task->users->firstWhere('id', auth()->id());
@@ -150,8 +158,18 @@
                             </td>
                         </tr>
                         <tr>
-                            <th class="border border-white p-2">Actions</th>
+                            <th class="border border-white p-2">Other User`s Status</th>
                             <td class="border border-white p-2">
+                                @foreach ($task->users as $user)
+                                    @if($task->parent_id != $user->pivot->user_id && $user->pivot->user_id != auth()->id())
+                                        <div>{{ $user->name }}: {{ App\Models\UserTask::statusLabel($user->pivot->status) }}</div>
+                                    @endif
+                                @endforeach
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="border border-white p-2">Actions</th>
+                            <td class="border border-white space-y-2 p-2">
                                 @if ($task->parent_id === auth()->id())
                                     <x-primary-button type="submit" class="w-20 justify-center hover:underline">
                                         <a href="{{ route('tasks.edit', $task) }}">{{ 'Edit' }}</a>

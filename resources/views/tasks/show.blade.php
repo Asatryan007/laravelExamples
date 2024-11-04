@@ -24,6 +24,7 @@
                         <th class="py-2 px-0 border-b  text-center">Completed At</th>
                         <th class="py-2 px-4 border-b text-center">Deadline</th>
                         <th class="py-2 px-4 border-b text-center">Status</th>
+                        <th class="py-2 px-4 border-b text-center">Other User`s Status</th>
                         <th class="py-2 px-4 border-b text-center">Actions</th>
                     </tr>
                     </thead>
@@ -41,10 +42,10 @@
                             {{ $deadline != null ? $deadline: 'non-privileged data' }}
                         </td>
                         <td class="py-2 px-4 border-b">
-                            <form class="flex" id="statusForm" action="{{route('tasks.statusUpdate',$task)}}" method="post">
+                            <form class="flex flex-col space-y-2" id="statusForm" action="{{route('tasks.statusUpdate',$task)}}" method="post">
                                 @csrf
 
-                                <select name="status" id="status" class="relative w-1/2 text-black border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500">
+                                <select name="status" id="status" class="relative w-full text-black border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500">
                                     @php
                                         $currentStatus = $userTask ? $userTask->pivot->status : null;
                                     @endphp
@@ -58,6 +59,13 @@
 
                                 <x-primary-button>{{'Apply Status'}}</x-primary-button>
                             </form>
+                        </td>
+                        <td class="border border-white p-2">
+                            @foreach ($task->users as $user)
+                                @if($task->parent_id != $user->pivot->user_id && $user->pivot->user_id != auth()->id())
+                                    <div>{{ $user->name }}: {{ App\Models\UserTask::statusLabel($user->pivot->status) }}</div>
+                                @endif
+                            @endforeach
                         </td>
                         <td class="py-2 px-4 border-b flex flex-col space-y-2  md:grid md:place-items-center">
                             @if ($task->parent_id === auth()->id())
@@ -117,10 +125,10 @@
                 <tr>
                     <th class="border bg-gray-700 border-r p-2">Status</th>
                     <td class="border border-white p-2 hover:bg-gray-600">
-                        <form class="flex" id="statusForm" action="{{route('tasks.statusUpdate',$task)}}" method="post">
+                        <form class="flex flex-col space-y-2" id="statusForm" action="{{route('tasks.statusUpdate',$task)}}" method="post">
                             @csrf
 
-                            <select name="status" id="status" class="relative w-1/2 text-black border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500">
+                            <select name="status" id="status" class="relative w-full text-black border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500">
 
                                 @foreach (App\Models\UserTask::statusOptionKeys() as $statusKey)
                                     <option value="{{ $statusKey }}" {{ $currentStatus == $statusKey ? 'selected' : '' }}>
@@ -131,6 +139,16 @@
 
                             <x-primary-button>{{'Apply Status'}}</x-primary-button>
                         </form>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="border bg-gray-700 border-r p-2">Other User`s Status</th>
+                    <td class="border border-white p-2">
+                        @foreach ($task->users as $user)
+                            @if($task->parent_id != $user->pivot->user_id && $user->pivot->user_id != auth()->id())
+                                <div>{{ $user->name }}: {{ App\Models\UserTask::statusLabel($user->pivot->status) }}</div>
+                            @endif
+                        @endforeach
                     </td>
                 </tr>
                 <tr>
