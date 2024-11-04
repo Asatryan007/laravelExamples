@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\UserRegistered;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthValidateRequest;
 use App\Models\User;
@@ -35,6 +36,8 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+
+        event(new UserRegistered($user));
         event(new Registered($user));
 
         Auth::login($user);

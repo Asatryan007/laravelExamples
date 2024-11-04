@@ -139,6 +139,7 @@ class TaskController extends Controller
             Mail::to($user->email)->send(new NotifyAboutTask($details));
         }
         return true;
+
     }
 
 }
