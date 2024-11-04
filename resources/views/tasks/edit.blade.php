@@ -55,21 +55,9 @@
                                 <div class="flex justify-between mb-4">
                                     <p>{{$user->name}}</p>
                                     <p>{{$user->email}}</p>
-
                                 </div>
                             @endif
                         @endforeach
-                    </div>
-                    <div class="mb-4">
-                        <label for="users" class="block text-black">{{'Select Users'}}</label>
-
-                        <select name="users[]" id="users"
-                                class="w-full p-2 border border-white bg-gray-300 text-black focus:outline-none focus:border-blue-500"
-                                multiple>
-                            @foreach($users as $user)
-                                <option value="{{$user->id}}">{{$user->name}}</option>
-                            @endforeach
-                        </select>
                     </div>
                     <div class="">
                         <button type="submit"
