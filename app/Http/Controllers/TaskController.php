@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StatusUpdateRequest;
 use App\Http\Requests\StoreCreateValidateRequest;
 use App\Http\Requests\StoreUpdateValidateRequest;
+use App\Mail\NotifyAboutTask;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class TaskController extends Controller
@@ -43,7 +45,16 @@ class TaskController extends Controller
         auth()->user()->tasks()->attach($task->id, [
             'deadline' => $taskData['deadline'] ?? null,
         ]);
+
         $task->users()->attach($selectedUsers);
+
+
+        $details = [
+            'title' => $taskData['title'],
+            'message' => 'You have been added to task ' . $taskData['title'],
+        ];
+
+        $this->notifyAboutTask($details, $selectedUsers);
 
         return redirect()->route('tasks.index')->with('success', __('Task created successfully.'));
     }
@@ -100,6 +111,7 @@ class TaskController extends Controller
 
         return redirect()->route('tasks.show',$task)->with('success','Task  '. $task->title .'  status updated successfully.');
     }
+
     private function filterTasks(array $filters)
     {
         $tasksQuery = Task::with('users:id,name'); // Eager load users with status
@@ -117,6 +129,16 @@ class TaskController extends Controller
         }
 
         return $tasksQuery->paginate(20);
+    }
+
+    private function notifyAboutTask($details, $userIds)
+    {
+        $users = User::whereIn('id', $userIds)->get();
+
+        foreach ($users as $user) {
+            Mail::to($user->email)->send(new NotifyAboutTask($details));
+        }
+        return true;
     }
 
 }
