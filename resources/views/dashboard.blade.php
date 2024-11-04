@@ -10,7 +10,6 @@
                         <h2 class=" text-base sm:text-2xl">State Of The Tasks</h2>
                         <div class="text-left">
                             <p class = 'flex justify-between text-gray-300 text-xs sm:text-lg'>Total Tasks: <span class="">{{$totalTasks}}</span></p>
-                            <p class = 'flex justify-between text-gray-300 text-xs sm:text-lg'>Overdue Tasks: <span class="">{{$overdueTasksCount}}</span></p>
                             <p class = 'flex justify-between text-gray-300 text-xs sm:text-lg'>Tasks To Do: <span class="">{{$todoTasksCount}}</span></p>
                             <p class = 'flex justify-between text-gray-300 text-xs sm:text-lg'>Tasks In Progress: <span class="">{{ $pendingTasksCount }}</span></p>
                             <p class = 'flex justify-between text-gray-300 text-xs sm:text-lg'>Tasks Review: <span class="">{{$reviewTasksCount}}</span></p>

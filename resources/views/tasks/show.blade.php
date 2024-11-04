@@ -64,10 +64,17 @@
                             @foreach ($task->users as $user)
                                 @if($task->parent_id != $user->pivot->user_id && $user->pivot->user_id != auth()->id())
                                     <div>{{ $user->name }}: {{ App\Models\UserTask::statusLabel($user->pivot->status) }}</div>
+                                    <form
+                                        action="{{route('tasks.detach',['userId'=> $user->id, 'taskId'=>$task->id,])}}"
+                                        method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <x-primary-button type="submit">Remove</x-primary-button>
+                                    </form>
                                 @endif
                             @endforeach
                         </td>
-                        <td class="py-2 px-4 border-b flex flex-col space-y-2  md:grid md:place-items-center">
+                        <td class="py-2 px-4 border-t flex flex-col space-y-2  md:grid md:place-items-center">
                             @if ($task->parent_id === auth()->id())
                                 <x-primary-button type="submit" class="w-20 justify-center hover:underline">
                                     <a href="{{ route('tasks.edit', $task) }}">{{ 'Edit' }}</a>
@@ -143,10 +150,17 @@
                 </tr>
                 <tr>
                     <th class="border bg-gray-700 border-r p-2">Other User`s Status</th>
-                    <td class="border border-white p-2">
+                    <td class="border-t border-white p-2">
                         @foreach ($task->users as $user)
                             @if($task->parent_id != $user->pivot->user_id && $user->pivot->user_id != auth()->id())
                                 <div>{{ $user->name }}: {{ App\Models\UserTask::statusLabel($user->pivot->status) }}</div>
+                                <form
+                                    action="{{route('tasks.detach',['userId'=> $user->id, 'taskId'=>$task->id,])}}"
+                                    method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <x-primary-button type="submit">Remove</x-primary-button>
+                                </form>
                             @endif
                         @endforeach
                     </td>

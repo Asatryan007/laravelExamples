@@ -80,10 +80,17 @@
                                 @foreach ($task->users as $user)
                                     @if($task->parent_id != $user->pivot->user_id && $user->pivot->user_id != auth()->id())
                                         <div>{{ $user->name }}: {{ App\Models\UserTask::statusLabel($user->pivot->status) }}</div>
+                                        <form
+                                            action="{{route('tasks.detach',['userId'=> $user->id, 'taskId'=>$task->id,])}}"
+                                            method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <x-primary-button type="submit">Remove</x-primary-button>
+                                        </form>
                                     @endif
                                 @endforeach
                             </td>
-                            <td class=" flex flex-col items-center justify-center space-y-2 border border-white p-2 lg:table-cell">
+                            <td class="flex flex-col content-between h-full space-y-2 border-t border-white p-2 lg:flex lg:justify-center lg:items-center">
                                 @if ($task->parent_id === auth()->id())
                                     <x-primary-button type="submit" class="w-20 justify-center hover:underline">
                                         <a href="{{ route('tasks.edit', $task) }}">{{ 'Edit' }}</a>
@@ -159,17 +166,24 @@
                         </tr>
                         <tr>
                             <th class="border border-white p-2">Other User`s Status</th>
-                            <td class="border border-white p-2">
+                            <td class="flex flex-col  border-white p-2">
                                 @foreach ($task->users as $user)
                                     @if($task->parent_id != $user->pivot->user_id && $user->pivot->user_id != auth()->id())
                                         <div>{{ $user->name }}: {{ App\Models\UserTask::statusLabel($user->pivot->status) }}</div>
+                                        <form
+                                            action="{{route('tasks.detach',['userId'=> $user->id, 'taskId'=>$task->id,])}}"
+                                            method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <x-primary-button type="submit">Remove</x-primary-button>
+                                        </form>
                                     @endif
                                 @endforeach
                             </td>
                         </tr>
                         <tr>
                             <th class="border border-white p-2">Actions</th>
-                            <td class="border border-white space-y-2 p-2">
+                            <td class="flex flex-col justify-end items-center border-t  border-white space-y-2 p-2">
                                 @if ($task->parent_id === auth()->id())
                                     <x-primary-button type="submit" class="w-20 justify-center hover:underline">
                                         <a href="{{ route('tasks.edit', $task) }}">{{ 'Edit' }}</a>

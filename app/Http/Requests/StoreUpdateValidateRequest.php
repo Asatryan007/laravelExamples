@@ -27,6 +27,7 @@ class StoreUpdateValidateRequest extends FormRequest
             'startedAt' => 'date|nullable',
             'completedAt' => 'date|nullable',
             'deadline' => 'date|nullable',
+            'users.*'  =>  'integer|exists:users,id',
         ];
     }
 }

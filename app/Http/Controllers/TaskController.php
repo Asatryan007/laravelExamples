@@ -29,6 +29,7 @@ class TaskController extends Controller
     public function create(): View
     {
         $users = User::where('id', '!=', Auth::id())->get();
+
         return view('tasks.create', compact('users'));
     }
 
@@ -38,7 +39,7 @@ class TaskController extends Controller
         $taskData = $request->validated();
 
         $taskData['parent_id'] = Auth::id();
-        $selectedUsers = $taskData['users'];
+        $selectedUsers = $taskData['users'] ?? [];
 
         $task = Task::create($taskData);
 
@@ -46,15 +47,17 @@ class TaskController extends Controller
             'deadline' => $taskData['deadline'] ?? null,
         ]);
 
-        $task->users()->attach($selectedUsers);
+        if(!empty($selectedUsers)) {
+            $task->users()->attach($selectedUsers);
 
 
-        $details = [
-            'title' => $taskData['title'],
-            'message' => 'You have been added to task ' . $taskData['title'],
-        ];
+            $details = [
+                'title' => $taskData['title'],
+                'message' => 'You have been added to task ' . $taskData['title'],
+            ];
 
-        $this->notifyAboutTask($details, $selectedUsers);
+            $this->notifyAboutTask($details, $selectedUsers);
+        }
 
         return redirect()->route('tasks.index')->with('success', __('Task created successfully.'));
     }
@@ -75,8 +78,10 @@ class TaskController extends Controller
         $data = $request->validated();
         $deadline = $data['deadline'];
 
+        // Update the task excluding the 'deadline'
         $task->update(collect($data)->except('deadline')->toArray());
 
+        // Update the pivot table with the deadline
         auth()->user()->tasks()->updateExistingPivot($task->id, [
             'deadline' => $deadline,
         ]);
@@ -91,14 +96,15 @@ class TaskController extends Controller
         return redirect()->route('tasks.index')->with('success', 'Task deleted successfully.');
     }
 
-    public function detach( $userId, $taskId): RedirectResponse
+    public function detach($userId, $taskId): RedirectResponse
     {
 
         $user = User::findOrFail($userId);
+        $task = Task::findOrFail($taskId);
 
         $user->tasks()->detach($taskId);
 
-        return redirect()->route('tasks.edit', $taskId)->with('success', 'Task from User deleted successfully.');
+        return redirect()->route('tasks.index')->with('success', 'Task '.$task->title.' from '.$user->name.' removed successfully.');
     }
 
     public function statusUpdate(StatusUpdateRequest $request, Task $task): RedirectResponse

@@ -35,9 +35,6 @@ class ProfileController extends Controller
             $status = $task->pivot->status;
             $taskCounts[$status]++;
 
-            if ($task->deadline < Carbon::now() && $status !== UserTask::COMPLETED) {
-                $overdueTasksCount++;
-            }
         }
 
         return view('dashboard', [
@@ -48,7 +45,6 @@ class ProfileController extends Controller
             'reviewTasksCount' => $taskCounts[UserTask::REVIEW],
             'completedTasksCount' => $taskCounts[UserTask::COMPLETED],
             'pendingTasksCount' => $taskCounts[UserTask::IN_PROGRESS],
-            'overdueTasksCount' => $overdueTasksCount,
         ]);
     }
 
